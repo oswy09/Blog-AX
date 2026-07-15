@@ -1,12 +1,7 @@
 import { ChevronRight, Calendar, Clock, ChevronLeft } from 'lucide-react';
 import { useState } from 'react';
+import { useParams, useNavigate } from 'react-router';
 import { allArticles } from '../data';
-
-interface Props {
-  category: string;
-  onClose: () => void;
-  onArticleClick: (article: any) => void;
-}
 
 const videoItems = [
   { id: 1, title: 'Prevención de Riesgos Laborales', thumbnail: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', category: 'ARL' },
@@ -20,7 +15,10 @@ const topicItems = [
   { id: 3, title: 'Turismo', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700' },
 ];
 
-export default function CategoryPage({ category, onClose, onArticleClick }: Props) {
+export default function CategoryPage() {
+  const { nombre } = useParams<{ nombre: string }>();
+  const navigate = useNavigate();
+  const category = decodeURIComponent(nombre ?? '');
   const [displayedCount, setDisplayedCount] = useState(6);
   const filtered = allArticles.filter(a => a.category === category);
   const visible = filtered.slice(0, displayedCount);
@@ -31,7 +29,7 @@ export default function CategoryPage({ category, onClose, onArticleClick }: Prop
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-[1280px] mx-auto px-4">
           <div className="flex items-center h-[52px] gap-8">
-            <img src="https://image.marketing.axacolpatria.co/lib/fe2911747364047e721277/m/1/414c8f47-08cb-4aca-80c0-c4ef42d1e91d.jpg" alt="AXA Colpatria" className="h-8 flex-shrink-0 cursor-pointer" onClick={onClose} />
+            <img src="https://image.marketing.axacolpatria.co/lib/fe2911747364047e721277/m/1/414c8f47-08cb-4aca-80c0-c4ef42d1e91d.jpg" alt="AXA Colpatria" className="h-8 flex-shrink-0 cursor-pointer" onClick={() => navigate('/')} />
             <nav className="flex items-center justify-center gap-7 flex-1">
               {['INICIO', 'Salud y Bienestar', 'Estilo de vida', 'Empresas', 'Actualidad'].map(item => (
                 <a key={item} href="#" className="text-sm font-bold text-[#00008F] hover:text-[#4976BA] whitespace-nowrap transition-colors">{item}</a>
@@ -48,7 +46,7 @@ export default function CategoryPage({ category, onClose, onArticleClick }: Prop
       {/* Volver al Blog */}
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-[1280px] mx-auto px-4 py-2">
-          <button onClick={onClose} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#00008F] hover:text-[#4976BA] transition-colors group">
+          <button onClick={() => navigate('/')} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#00008F] hover:text-[#4976BA] transition-colors group">
             <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
             Volver al Blog
           </button>
@@ -81,7 +79,7 @@ export default function CategoryPage({ category, onClose, onArticleClick }: Prop
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                 {visible.map(article => (
-                  <article key={article.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer group" onClick={() => onArticleClick(article)}>
+                  <article key={article.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer group" onClick={() => navigate(`/articulo/${article.id}`)}>
                     <div className="relative w-full h-44 overflow-hidden">
                       <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       <div className="absolute top-3 right-3">
