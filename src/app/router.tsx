@@ -24,9 +24,13 @@ export function Router({ children }: { children: ReactNode }) {
   const [pathname, setPathname] = useState(() => window.location.pathname || '/');
 
   const navigate = useCallback((to: string) => {
-    history.pushState(null, '', to);
+    try {
+      history.pushState(null, '', to);
+    } catch (_) {
+      // iframe sandbox may block pushState — navigation still works via state
+    }
     setPathname(to);
-    window.scrollTo(0, 0);
+    try { window.scrollTo(0, 0); } catch (_) {}
   }, []);
 
   useEffect(() => {
