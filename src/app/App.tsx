@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Search, Calendar, Clock, ChevronRight as ChevRight, X } from 'lucide-react';
+import { Search, Calendar, Clock, ChevronRight as ChevRight, X, Menu } from 'lucide-react';
 import ArticleDetail from './components/ArticleDetail';
 import CategoryPage from './components/CategoryPage';
 import { featuredPosts, recentPosts, blogPosts, mostReadPosts } from './data';
@@ -61,15 +61,20 @@ function HomePage() {
         <div className="max-w-[1280px] mx-auto px-4">
           <div className="flex items-center h-[52px] gap-8">
             <img src="https://image.marketing.axacolpatria.co/lib/fe2911747364047e721277/m/1/414c8f47-08cb-4aca-80c0-c4ef42d1e91d.jpg" alt="AXA Colpatria" className="h-8 flex-shrink-0 cursor-pointer" onClick={() => navigate('/')} />
-            <nav className="flex items-center justify-center gap-7 flex-1">
+            {/* Desktop nav */}
+            <nav className="hidden md:flex items-center justify-center gap-7 flex-1">
               {['INICIO', 'Salud y Bienestar', 'Estilo de vida', 'Empresas', 'Actualidad'].map(item => (
                 <a key={item} href="#" className="text-sm font-bold text-[#00008F] hover:text-[#4976BA] whitespace-nowrap transition-colors">{item}</a>
               ))}
             </nav>
-            <div className="flex items-center gap-2 flex-shrink-0">
+            <div className="hidden md:flex items-center gap-2 flex-shrink-0">
               <button className="bg-[#00008F] hover:bg-[#0000b3] text-white text-sm font-semibold px-4 py-2 transition-colors whitespace-nowrap">Cotiza tu seguro aquí</button>
               <button className="border border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white text-sm font-semibold px-4 py-2 transition-colors whitespace-nowrap">Contáctanos</button>
               <button className="p-2 text-gray-500 hover:text-[#00008F] transition-colors"><Search size={18} /></button>
+            </div>
+            {/* Mobile hamburger */}
+            <div className="flex md:hidden items-center ml-auto">
+              <button className="p-2 text-[#00008F]"><Menu size={24} /></button>
             </div>
           </div>
         </div>
@@ -99,10 +104,16 @@ function HomePage() {
               <button onClick={clearFilters} className="flex items-center gap-1 px-3 py-2.5 text-xs font-medium text-[#D24723] border border-[#D24723]/30 rounded-full hover:bg-[#D24723]/5 transition-colors whitespace-nowrap"><X size={13} /> Limpiar</button>
             )}
           </div>
-          <div className="flex gap-2 justify-center flex-nowrap">
+          {/* Desktop: una fila sin wrap. Mobile: grid 3 columnas */}
+          <div className="hidden md:flex gap-2 justify-center flex-nowrap">
             <button onClick={() => { setActiveTags([]); setSelectedCategory('Todos'); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border whitespace-nowrap flex-shrink-0 ${activeTags.length === 0 && selectedCategory === 'Todos' ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#00008F] border-[#00008F]/30 hover:bg-[#00008F]/5'}`}>Todos</button>
             {categories.filter(c => c !== 'Todos').map(tag => (
               <button key={tag} onClick={() => { toggleTag(tag); setSelectedCategory(tag); navigate(`/categoria/${encodeURIComponent(tag)}`); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border whitespace-nowrap flex-shrink-0 ${activeTags.includes(tag) || selectedCategory === tag ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#4976BA] border-[#4976BA]/40 hover:border-[#00008F] hover:text-[#00008F]'}`}>{tag}</button>
+            ))}
+          </div>
+          <div className="grid md:hidden grid-cols-3 gap-2">
+            {categories.map(tag => (
+              <button key={tag} onClick={() => { if (tag === 'Todos') { setActiveTags([]); setSelectedCategory('Todos'); } else { toggleTag(tag); setSelectedCategory(tag); navigate(`/categoria/${encodeURIComponent(tag)}`); } }} className={`px-3 py-1.5 rounded-full text-sm font-semibold transition-all border text-center ${(tag === 'Todos' && activeTags.length === 0 && selectedCategory === 'Todos') || activeTags.includes(tag) || selectedCategory === tag ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#4976BA] border-[#4976BA]/40'}`}>{tag}</button>
             ))}
           </div>
         </div>
@@ -134,7 +145,7 @@ function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
               <h2 className="text-2xl mb-6" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recomendados del día</h2>
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {(filteredRecent.length > 0 ? filteredRecent : recentPosts).concat(filteredBlog.length > 0 ? filteredBlog : blogPosts).slice(0, 6).map(post => (
                   <article key={post.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
                     <div className="relative w-full h-44 overflow-hidden">
@@ -192,9 +203,9 @@ function HomePage() {
       </section>
 
       {/* Videos */}
-      <section style={{ backgroundColor: '#070E40' }} className="py-14">
+      <section style={{ backgroundColor: '#E8F0F8' }} className="py-14">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-white text-center mb-10" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.8rem)' }}>Conoce en menos de 2 minutos...</h2>
+          <h2 className="text-center mb-10" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', color: '#00008F' }}>Conoce en menos de 2 minutos...</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {videoItems.map(video => (
               <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer" onClick={() => setActiveVideo(video)}>
