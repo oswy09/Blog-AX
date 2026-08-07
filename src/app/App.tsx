@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Search, Calendar, Clock, ArrowRight, ChevronRight as ChevRight, ChevronDown, X, User } from 'lucide-react';
+import { Search, Calendar, Clock, ChevronRight as ChevRight, ChevronDown, X, User, PlayCircle } from 'lucide-react';
 import ArticleDetail from './components/ArticleDetail';
 import CategoryPage from './components/CategoryPage';
-import { featuredPosts, recentPosts, blogPosts, mostReadPosts, exploreMore } from './data';
+import { featuredPosts, recentPosts, blogPosts, mostReadPosts } from './data';
 
 const categories = ['Todos', 'Seguros', 'Salud', 'ARL', 'Bienestar', 'Prevención', 'Movilidad'];
 
@@ -15,45 +15,28 @@ const videoItems = [
   { id: 3, title: 'Ejercicios de Bienestar en el Trabajo', thumbnail: 'https://images.unsplash.com/photo-1606857521015-7f9fcf423740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', category: 'ARL' },
 ];
 
-const categoryColor: Record<string, string> = {
-  Bienestar: '#00008F', Seguros: '#4976BA', ARL: '#D24723', Salud: '#4976BA',
-  Movilidad: '#00008F', Prevención: '#D24723', Hogar: '#4976BA', Todos: '#00008F',
-};
 
-function CategoryBadge({ category }: { category: string }) {
-  const color = categoryColor[category] ?? '#4976BA';
+
+function VideoModal({ video, onClose }: { video: typeof videoItems[0] | null; onClose: () => void }) {
+  if (!video) return null;
   return (
-    <span className="inline-block text-white text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: color, fontFamily: "'Source Sans Pro', sans-serif" }}>
-      {category}
-    </span>
-  );
-}
-
-const filterDates = ['Última semana', 'Último mes', 'Últimos 3 meses', 'Este año'];
-const filterFormats = ['Artículo', 'Video', 'Infografía', 'Podcast'];
-const filterCategories = categories.filter(c => c !== 'Todos');
-
-function FilterDropdown({ placeholder, options, value, onChange }: {
-  placeholder: string; options: string[]; value: string; onChange: (v: string) => void;
-}) {
-  const [open, setOpen] = useState(false);
-  const selected = value !== '' ? value : null;
-  return (
-    <div className="relative">
-      <button onClick={() => setOpen(o => !o)} className="flex items-center justify-between gap-3 border border-gray-300 rounded-xl px-4 py-2.5 bg-white text-sm transition-colors min-w-[190px] hover:border-[#00008F] focus:border-[#00008F] focus:outline-none" style={{ fontFamily: "'Source Sans Pro', sans-serif" }}>
-        <span className={selected ? 'text-gray-800' : 'text-gray-400'}>{selected ?? placeholder}</span>
-        <ChevronDown size={16} className={`flex-shrink-0 text-gray-400 transition-transform ${open ? 'rotate-180' : ''}`} />
-      </button>
-      {open && (
-        <div className="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-xl z-50 min-w-[210px] py-1 overflow-hidden">
-          {selected && (
-            <button onClick={() => { onChange(''); setOpen(false); }} className="w-full text-left px-4 py-2.5 text-sm text-gray-400 hover:bg-gray-50" style={{ fontFamily: "'Source Sans Pro', sans-serif" }}>{placeholder}</button>
-          )}
-          {options.map(opt => (
-            <button key={opt} onClick={() => { onChange(opt); setOpen(false); }} className={`w-full text-left px-4 py-2.5 text-sm transition-colors ${value === opt ? 'bg-[#00008F]/5 text-[#00008F] font-semibold' : 'text-gray-700 hover:bg-gray-50'}`} style={{ fontFamily: "'Source Sans Pro', sans-serif" }}>{opt}</button>
-          ))}
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75" onClick={onClose}>
+      <div className="relative w-full max-w-3xl mx-4" onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors flex items-center gap-1 text-sm font-semibold">
+          <X size={18} /> Cerrar
+        </button>
+        <div className="relative w-full rounded-xl overflow-hidden shadow-2xl" style={{ paddingTop: '56.25%' }}>
+          <iframe
+            className="absolute inset-0 w-full h-full"
+            src={`https://www.youtube.com/embed/fzSyiC2DWgc?autoplay=1&rel=0`}
+            title={video.title}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         </div>
-      )}
+        <p className="text-white font-semibold mt-3 text-center" style={{ fontFamily: "'Publico Headline Web', serif" }}>{video.title}</p>
+      </div>
     </div>
   );
 }
@@ -62,14 +45,12 @@ function HomePage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
-  const [filterDate, setFilterDate] = useState('');
-  const [filterFormat, setFilterFormat] = useState('');
-  const [filterCat, setFilterCat] = useState('');
   const [activeTags, setActiveTags] = useState<string[]>([]);
+  const [activeVideo, setActiveVideo] = useState<typeof videoItems[0] | null>(null);
 
   const toggleTag = (tag: string) => setActiveTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
-  const clearFilters = () => { setFilterDate(''); setFilterFormat(''); setFilterCat(''); setActiveTags([]); setSearchQuery(''); setSelectedCategory('Todos'); };
-  const hasActiveFilters = filterDate !== '' || filterFormat !== '' || filterCat !== '' || activeTags.length > 0;
+  const clearFilters = () => { setActiveTags([]); setSearchQuery(''); setSelectedCategory('Todos'); };
+  const hasActiveFilters = activeTags.length > 0 || searchQuery !== '';
   const filteredRecent = recentPosts.filter(p => (selectedCategory === 'Todos' || p.category === selectedCategory) && (activeTags.length === 0 || activeTags.includes(p.category)));
   const filteredBlog = blogPosts.filter(p => (selectedCategory === 'Todos' || p.category === selectedCategory) && (activeTags.length === 0 || activeTags.includes(p.category)));
 
@@ -119,20 +100,17 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Search + Filters */}
+      {/* Search + Categorías */}
       <div className="bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-4xl mx-auto px-6 py-10">
+        <div className="max-w-2xl mx-auto px-6 py-10">
           <h2 className="text-center text-3xl md:text-4xl text-gray-800 mb-7 leading-tight">
             <span style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>¿Qué quieres aprender hoy?</span>
           </h2>
-          <div className="flex flex-col sm:flex-row gap-2 mb-5">
+          <div className="flex gap-2 mb-5">
             <div className="relative flex-1">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input type="text" placeholder="Buscar" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#00008F] transition-colors" />
             </div>
-            <FilterDropdown placeholder="Selecciona fecha" options={filterDates} value={filterDate} onChange={setFilterDate} />
-            <FilterDropdown placeholder="Selecciona formato" options={filterFormats} value={filterFormat} onChange={setFilterFormat} />
-            <FilterDropdown placeholder="Selecciona categoría" options={filterCategories} value={filterCat} onChange={v => { setFilterCat(v); setSelectedCategory(v === '' ? 'Todos' : v); }} />
             {hasActiveFilters && (
               <button onClick={clearFilters} className="flex items-center gap-1 px-3 py-2.5 text-xs font-medium text-[#D24723] border border-[#D24723]/30 rounded hover:bg-[#D24723]/5 transition-colors whitespace-nowrap"><X size={13} /> Limpiar</button>
             )}
@@ -171,7 +149,7 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
-              <h2 className="text-2xl mb-6" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recomendados para ti</h2>
+              <h2 className="text-2xl mb-6" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recomendados del día</h2>
               <div className="grid grid-cols-2 gap-6">
                 {(filteredRecent.length > 0 ? filteredRecent : recentPosts).concat(filteredBlog.length > 0 ? filteredBlog : blogPosts).slice(0, 6).map(post => (
                   <article key={post.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
@@ -210,14 +188,13 @@ function HomePage() {
                 </div>
               </div>
               <div>
-                <h2 className="text-xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Te puede interesar</h2>
+                <h2 className="text-xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Más leídos</h2>
                 <div className="divide-y divide-gray-100">
-                  {mostReadPosts.slice(3, 6).map(post => (
+                  {mostReadPosts.slice(3, 6).map((post, i) => (
                     <div key={post.id} className="flex items-start gap-3 py-3 cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
-                      <img src={post.image} alt={post.title} className="w-[72px] h-[72px] object-cover flex-shrink-0 rounded-md" />
+                      <span className="text-3xl font-black text-gray-100 flex-shrink-0 w-8 text-center leading-none mt-1" style={{ fontFamily: "'Publico Headline Web', serif" }}>{i + 1}</span>
                       <div className="flex-1 min-w-0">
                         <h4 className="text-[14px] font-bold leading-snug text-gray-900 line-clamp-2 group-hover:text-[#00008F] transition-colors mb-1" style={{ fontFamily: "'Publico Headline Web', serif" }}>{post.title}</h4>
-                        <p className="text-xs text-gray-400 line-clamp-1 mb-1">{post.excerpt}</p>
                         <p className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={11} /> {post.date}</p>
                       </div>
                     </div>
@@ -246,13 +223,11 @@ function HomePage() {
           <h2 className="text-white text-center mb-10" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.8rem)' }}>Conoce en menos de 2 minutos...</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {videoItems.map(video => (
-              <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer">
+              <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer" onClick={() => setActiveVideo(video)}>
                 <div className="relative h-44 overflow-hidden">
                   <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/45 transition-colors flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
-                      <div className="w-0 h-0 border-t-[7px] border-b-[7px] border-l-[13px] border-t-transparent border-b-transparent border-l-[#D24723] ml-1" />
-                    </div>
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center">
+                    <PlayCircle size={52} className="text-white/90 group-hover:text-white group-hover:scale-110 transition-all drop-shadow-lg" />
                   </div>
                 </div>
                 <div className="p-4">
@@ -265,31 +240,7 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Sigue explorando */}
-      <section className="py-14 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Sigue explorando</h2>
-            <a href="#" className="text-sm font-semibold text-[#00008F] hover:text-[#4976BA] flex items-center gap-1">Ver todos <ChevRight size={16} /></a>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {exploreMore.map(post => (
-              <article key={post.id} className="bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
-                <div className="relative h-52 overflow-hidden">
-                  <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute top-3 left-3"><CategoryBadge category={post.category} /></div>
-                </div>
-                <div className="p-6">
-                  <p className="text-xs text-gray-400 mb-2 flex items-center gap-1"><Calendar size={12} /> {post.date}</p>
-                  <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-[#00008F] transition-colors leading-snug" style={{ fontFamily: "'Publico Headline Web', serif" }}>{post.title}</h3>
-                  <p className="text-sm text-gray-500 line-clamp-2 mb-4">{post.excerpt}</p>
-                  <span className="inline-flex items-center gap-1 text-[#00008F] text-sm font-semibold group-hover:gap-2 transition-all">Leer más <ArrowRight size={15} /></span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
+      <VideoModal video={activeVideo} onClose={() => setActiveVideo(null)} />
 
       <footer>
         <img src="https://res.cloudinary.com/ddqbnr9vo/image/upload/v1782842464/footer_AXA_f1azqa.jpg" alt="Footer AXA Colpatria" className="w-full h-auto" />
