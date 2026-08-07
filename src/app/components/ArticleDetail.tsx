@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router';
-import { Calendar, ArrowRight, Share2, ChevronLeft } from 'lucide-react';
+import { Calendar, ArrowRight, Share2, ChevronRight } from 'lucide-react';
 import { getArticleById } from '../data';
 
 const relatedArticles = [
@@ -50,13 +50,16 @@ export default function ArticleDetail() {
         </div>
       </header>
 
-      {/* Volver al Blog */}
+      {/* Breadcrumbs */}
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-[1280px] mx-auto px-4 py-2">
-          <button onClick={() => navigate('/')} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#00008F] hover:text-[#4976BA] transition-colors group">
-            <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
-            Volver al Blog
-          </button>
+          <nav className="flex items-center gap-1.5 text-xs text-gray-500">
+            <button onClick={() => navigate('/')} className="hover:text-[#00008F] transition-colors font-medium">Inicio</button>
+            <ChevronRight size={13} className="text-gray-400 flex-shrink-0" />
+            <button onClick={() => navigate(`/categoria/${encodeURIComponent(article.category)}`)} className="hover:text-[#00008F] transition-colors font-medium">{article.category}</button>
+            <ChevronRight size={13} className="text-gray-400 flex-shrink-0" />
+            <span className="text-gray-700 font-medium truncate max-w-xs">{article.title}</span>
+          </nav>
         </div>
       </div>
 

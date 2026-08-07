@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Search, Calendar, Clock, ChevronRight as ChevRight, ChevronDown, X, User, PlayCircle } from 'lucide-react';
+import { Search, Calendar, Clock, ChevronRight as ChevRight, X } from 'lucide-react';
 import ArticleDetail from './components/ArticleDetail';
 import CategoryPage from './components/CategoryPage';
 import { featuredPosts, recentPosts, blogPosts, mostReadPosts } from './data';
@@ -56,22 +56,6 @@ function HomePage() {
 
   return (
     <div className="min-h-screen bg-gray-50" style={{ fontFamily: "'Source Sans Pro', sans-serif" }}>
-      {/* Utility bar */}
-      <div className="bg-gray-50 border-b border-gray-200">
-        <div className="max-w-[1280px] mx-auto px-4 flex items-center h-8">
-          <div className="flex items-center gap-6">
-            <a href="#" className="text-xs text-gray-600 hover:text-[#00008F]">Personas</a>
-            <a href="#" className="text-xs text-gray-600 hover:text-[#00008F]">Empresas</a>
-          </div>
-          <div className="flex items-center gap-5 ml-auto">
-            <a href="#" className="text-xs text-gray-500 hover:text-[#00008F]">Ley de transparencia</a>
-            <div className="flex items-center gap-1 cursor-pointer group"><User size={13} className="text-gray-400 group-hover:text-[#00008F]" /><span className="text-xs text-gray-500 group-hover:text-[#00008F]">Pagos y facturación</span><ChevronDown size={12} className="text-gray-400" /></div>
-            <div className="flex items-center gap-1 cursor-pointer group"><User size={13} className="text-gray-400 group-hover:text-[#00008F]" /><span className="text-xs text-gray-500 group-hover:text-[#00008F]">Ingresa a tu cuenta</span><ChevronDown size={12} className="text-gray-400" /></div>
-            <button className="border border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white text-xs font-semibold px-4 h-8 transition-colors">Paga aquí</button>
-          </div>
-        </div>
-      </div>
-
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-[1280px] mx-auto px-4">
@@ -115,10 +99,10 @@ function HomePage() {
               <button onClick={clearFilters} className="flex items-center gap-1 px-3 py-2.5 text-xs font-medium text-[#D24723] border border-[#D24723]/30 rounded hover:bg-[#D24723]/5 transition-colors whitespace-nowrap"><X size={13} /> Limpiar</button>
             )}
           </div>
-          <div className="flex gap-2 flex-wrap justify-center">
-            <button onClick={() => { setActiveTags([]); setSelectedCategory('Todos'); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border ${activeTags.length === 0 && selectedCategory === 'Todos' ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#00008F] border-[#00008F]/30 hover:bg-[#00008F]/5'}`}>Todos</button>
+          <div className="flex gap-2 justify-center flex-nowrap overflow-x-auto pb-1">
+            <button onClick={() => { setActiveTags([]); setSelectedCategory('Todos'); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border whitespace-nowrap flex-shrink-0 ${activeTags.length === 0 && selectedCategory === 'Todos' ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#00008F] border-[#00008F]/30 hover:bg-[#00008F]/5'}`}>Todos</button>
             {categories.filter(c => c !== 'Todos').map(tag => (
-              <button key={tag} onClick={() => { toggleTag(tag); setSelectedCategory(tag); navigate(`/categoria/${encodeURIComponent(tag)}`); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border ${activeTags.includes(tag) || selectedCategory === tag ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#4976BA] border-[#4976BA]/40 hover:border-[#00008F] hover:text-[#00008F]'}`}>{tag}</button>
+              <button key={tag} onClick={() => { toggleTag(tag); setSelectedCategory(tag); navigate(`/categoria/${encodeURIComponent(tag)}`); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border whitespace-nowrap flex-shrink-0 ${activeTags.includes(tag) || selectedCategory === tag ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#4976BA] border-[#4976BA]/40 hover:border-[#00008F] hover:text-[#00008F]'}`}>{tag}</button>
             ))}
           </div>
         </div>
@@ -190,25 +174,15 @@ function HomePage() {
               <div>
                 <h2 className="text-xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Más leídos</h2>
                 <div className="divide-y divide-gray-100">
-                  {mostReadPosts.slice(3, 6).map((post, i) => (
+                  {mostReadPosts.slice(3, 6).map(post => (
                     <div key={post.id} className="flex items-start gap-3 py-3 cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
-                      <span className="text-3xl font-black text-gray-100 flex-shrink-0 w-8 text-center leading-none mt-1" style={{ fontFamily: "'Publico Headline Web', serif" }}>{i + 1}</span>
+                      <img src={post.image} alt={post.title} className="w-[72px] h-[72px] object-cover flex-shrink-0 rounded-md" />
                       <div className="flex-1 min-w-0">
                         <h4 className="text-[14px] font-bold leading-snug text-gray-900 line-clamp-2 group-hover:text-[#00008F] transition-colors mb-1" style={{ fontFamily: "'Publico Headline Web', serif" }}>{post.title}</h4>
+                        <p className="text-xs text-gray-400 line-clamp-1 mb-1">{post.excerpt}</p>
                         <p className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={11} /> {post.date}</p>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-              <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-                <h3 className="text-base font-bold text-gray-800 mb-4 flex items-center gap-2" style={{ fontFamily: "'Publico Headline Web', serif" }}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#7698CB" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
-                  Tags
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {[['#Bienestar','Bienestar'],['#ARL','ARL'],['#Finanzas','Seguros'],['#Prevención','Prevención'],['#Salud','Salud'],['#Seguros','Seguros'],['#Sostenibilidad','Bienestar'],['#SOAT','Seguros'],['#Riesgos Laborales','ARL'],['#Estilo de Vida','Bienestar'],['#Movilidad','Movilidad'],['#Pyme','Seguros'],['#Hogar','Prevención']].map(([label, cat]) => (
-                    <span key={label} className="text-xs text-gray-600 border border-gray-200 rounded-full px-3 py-1 hover:border-[#00008F] hover:text-[#00008F] cursor-pointer transition-colors" onClick={() => navigate(`/categoria/${encodeURIComponent(cat)}`)}>{label}</span>
                   ))}
                 </div>
               </div>
@@ -226,8 +200,10 @@ function HomePage() {
               <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer" onClick={() => setActiveVideo(video)}>
                 <div className="relative h-44 overflow-hidden">
                   <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors flex items-center justify-center">
-                    <PlayCircle size={52} className="text-white/90 group-hover:text-white group-hover:scale-110 transition-all drop-shadow-lg" />
+                  <div className="absolute inset-0 bg-black/30 group-hover:bg-black/45 transition-colors flex items-center justify-center">
+                    <div className="w-12 h-12 rounded-full bg-white/95 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <div className="w-0 h-0 border-t-[7px] border-b-[7px] border-l-[13px] border-t-transparent border-b-transparent border-l-[#D24723] ml-1" />
+                    </div>
                   </div>
                 </div>
                 <div className="p-4">
