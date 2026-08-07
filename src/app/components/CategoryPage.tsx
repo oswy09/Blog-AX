@@ -1,5 +1,5 @@
 import { ChevronRight, Calendar, Clock, ChevronLeft } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { allArticles } from '../data';
 
@@ -9,10 +9,13 @@ const videoItems = [
   { id: 3, title: 'Ejercicios de Bienestar en el Trabajo', thumbnail: 'https://images.unsplash.com/photo-1606857521015-7f9fcf423740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', category: 'Bienestar' },
 ];
 
-const topicItems = [
-  { id: 1, title: 'Movilidad segura', image: 'https://images.unsplash.com/photo-1549227082-0ea18ce30397?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700' },
-  { id: 2, title: 'Prevención', image: 'https://images.unsplash.com/photo-1573164574572-cb89e39749b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700' },
-  { id: 3, title: 'Turismo', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700' },
+const moreCategories = [
+  { id: 1, title: 'Movilidad segura', image: 'https://images.unsplash.com/photo-1549227082-0ea18ce30397?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700', cat: 'Movilidad' },
+  { id: 2, title: 'Prevención', image: 'https://images.unsplash.com/photo-1573164574572-cb89e39749b4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700', cat: 'Prevención' },
+  { id: 3, title: 'Salud y Bienestar', image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700', cat: 'Salud' },
+  { id: 4, title: 'Seguros de vida', image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700', cat: 'Seguros' },
+  { id: 5, title: 'ARL Empresas', image: 'https://images.unsplash.com/photo-1573164713988-8665fc963095?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700', cat: 'ARL' },
+  { id: 6, title: 'Bienestar laboral', image: 'https://images.unsplash.com/photo-1606857521015-7f9fcf423740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700', cat: 'Bienestar' },
 ];
 
 export default function CategoryPage() {
@@ -20,6 +23,14 @@ export default function CategoryPage() {
   const navigate = useNavigate();
   const category = decodeURIComponent(nombre ?? '');
   const [displayedCount, setDisplayedCount] = useState(6);
+  const [sliderIndex, setSliderIndex] = useState(0);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const VISIBLE = 3;
+  const maxIndex = moreCategories.length - VISIBLE;
+
+  const slide = (dir: 1 | -1) => {
+    setSliderIndex(prev => Math.max(0, Math.min(maxIndex, prev + dir)));
+  };
   const filtered = allArticles.filter(a => a.category === category);
   const visible = filtered.slice(0, displayedCount);
 
@@ -133,19 +144,51 @@ export default function CategoryPage() {
         </div>
       </section>
 
-      {/* Más temas */}
+      {/* Más categorías para ti — Slider */}
       <section className="py-16" style={{ backgroundColor: '#E8F0F8' }}>
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-2xl font-bold text-gray-900 mb-12 text-center" style={{ fontFamily: "'Publico Headline Web', serif" }}>Descubre más temas</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {topicItems.map(topic => (
-              <div key={topic.id} className="relative h-96 rounded-lg overflow-hidden cursor-pointer group">
-                <img src={topic.image} alt={topic.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end justify-start p-6">
-                  <h3 className="text-white text-xl font-bold" style={{ fontFamily: "'Publico Headline Web', serif" }}>{topic.title}</h3>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif" }}>Más categorías para ti</h2>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => slide(-1)}
+                disabled={sliderIndex === 0}
+                className="w-9 h-9 flex items-center justify-center border-2 border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                style={{ borderRadius: 0 }}
+              >
+                <ChevronLeft size={18} />
+              </button>
+              <button
+                onClick={() => slide(1)}
+                disabled={sliderIndex >= maxIndex}
+                className="w-9 h-9 flex items-center justify-center border-2 border-[#00008F] bg-[#00008F] text-white hover:bg-[#0000b3] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+                style={{ borderRadius: 0 }}
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
+          <div className="overflow-hidden" ref={sliderRef}>
+            <div
+              className="flex gap-6 transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(calc(-${sliderIndex} * (100% / ${VISIBLE} + 8px)))` }}
+            >
+              {moreCategories.map(topic => (
+                <div
+                  key={topic.id}
+                  className="relative flex-shrink-0 rounded-lg overflow-hidden cursor-pointer group"
+                  style={{ width: `calc((100% - ${(VISIBLE - 1) * 24}px) / ${VISIBLE})` }}
+                  onClick={() => navigate(`/categoria/${encodeURIComponent(topic.cat)}`)}
+                >
+                  <div className="h-72">
+                    <img src={topic.image} alt={topic.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent flex items-end justify-start p-6">
+                      <h3 className="text-white text-xl font-bold" style={{ fontFamily: "'Publico Headline Web', serif" }}>{topic.title}</h3>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

@@ -86,20 +86,20 @@ function HomePage() {
 
       {/* Search + Categorías */}
       <div className="bg-white border-b border-gray-100 shadow-sm">
-        <div className="max-w-2xl mx-auto px-6 py-10">
+        <div className="max-w-5xl mx-auto px-6 py-10">
           <h2 className="text-center text-3xl md:text-4xl text-gray-800 mb-7 leading-tight">
             <span style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>¿Qué quieres aprender hoy?</span>
           </h2>
-          <div className="flex gap-2 mb-5">
+          <div className="flex gap-2 mb-5 max-w-lg mx-auto">
             <div className="relative flex-1">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-              <input type="text" placeholder="Buscar" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#00008F] transition-colors" />
+              <input type="text" placeholder="Buscar" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#00008F] transition-colors" />
             </div>
             {hasActiveFilters && (
-              <button onClick={clearFilters} className="flex items-center gap-1 px-3 py-2.5 text-xs font-medium text-[#D24723] border border-[#D24723]/30 rounded hover:bg-[#D24723]/5 transition-colors whitespace-nowrap"><X size={13} /> Limpiar</button>
+              <button onClick={clearFilters} className="flex items-center gap-1 px-3 py-2.5 text-xs font-medium text-[#D24723] border border-[#D24723]/30 rounded-full hover:bg-[#D24723]/5 transition-colors whitespace-nowrap"><X size={13} /> Limpiar</button>
             )}
           </div>
-          <div className="flex gap-2 justify-center flex-nowrap overflow-x-auto pb-1">
+          <div className="flex gap-2 justify-center flex-nowrap">
             <button onClick={() => { setActiveTags([]); setSelectedCategory('Todos'); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border whitespace-nowrap flex-shrink-0 ${activeTags.length === 0 && selectedCategory === 'Todos' ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#00008F] border-[#00008F]/30 hover:bg-[#00008F]/5'}`}>Todos</button>
             {categories.filter(c => c !== 'Todos').map(tag => (
               <button key={tag} onClick={() => { toggleTag(tag); setSelectedCategory(tag); navigate(`/categoria/${encodeURIComponent(tag)}`); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border whitespace-nowrap flex-shrink-0 ${activeTags.includes(tag) || selectedCategory === tag ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#4976BA] border-[#4976BA]/40 hover:border-[#00008F] hover:text-[#00008F]'}`}>{tag}</button>

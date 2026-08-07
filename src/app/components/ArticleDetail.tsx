@@ -53,12 +53,12 @@ export default function ArticleDetail() {
       {/* Breadcrumbs */}
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-[1280px] mx-auto px-4 py-2">
-          <nav className="flex items-center gap-1.5 text-xs text-gray-500">
-            <button onClick={() => navigate('/')} className="hover:text-[#00008F] transition-colors font-medium">Inicio</button>
+          <nav className="flex items-center gap-1.5" style={{ fontFamily: "'Source Sans Pro', sans-serif", fontSize: '13px' }}>
+            <button onClick={() => navigate('/')} className="text-[#00008F] hover:underline font-semibold">Inicio</button>
             <ChevronRight size={13} className="text-gray-400 flex-shrink-0" />
-            <button onClick={() => navigate(`/categoria/${encodeURIComponent(article.category)}`)} className="hover:text-[#00008F] transition-colors font-medium">{article.category}</button>
+            <button onClick={() => navigate(`/categoria/${encodeURIComponent(article.category)}`)} className="text-[#00008F] hover:underline font-semibold">{article.category}</button>
             <ChevronRight size={13} className="text-gray-400 flex-shrink-0" />
-            <span className="text-gray-700 font-medium truncate max-w-xs">{article.title}</span>
+            <span className="text-gray-500 truncate max-w-sm">{article.title}</span>
           </nav>
         </div>
       </div>
