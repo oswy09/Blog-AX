@@ -1,4 +1,4 @@
-import { ChevronRight, Calendar, Clock, ChevronLeft } from 'lucide-react';
+import { ChevronRight, Calendar, Clock } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { allArticles } from '../data';
@@ -54,13 +54,14 @@ export default function CategoryPage() {
         </div>
       </header>
 
-      {/* Volver al Blog */}
+      {/* Breadcrumbs */}
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-[1280px] mx-auto px-4 py-2">
-          <button onClick={() => navigate('/')} className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#00008F] hover:text-[#4976BA] transition-colors group">
-            <ChevronLeft size={16} className="group-hover:-translate-x-0.5 transition-transform" />
-            Volver al Blog
-          </button>
+          <nav className="flex items-center gap-1.5" style={{ fontFamily: "'Source Sans Pro', sans-serif", fontSize: '13px', fontWeight: 600 }}>
+            <button onClick={() => navigate('/')} className="text-[#00008F] hover:underline">Inicio</button>
+            <ChevronRight size={13} className="text-gray-400 flex-shrink-0" />
+            <span className="text-gray-500">{category}</span>
+          </nav>
         </div>
       </div>
 

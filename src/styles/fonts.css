@@ -1,6 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=keyboard_arrow_left,keyboard_arrow_right');
 
-/* Definición de la fuente Publico Headline Bold */
+/* Publico Headline Light — para títulos de banner */
+@font-face {
+    font-family: 'Publico Headline Web';
+    src: url('https://res.cloudinary.com/ddqbnr9vo/raw/upload/v1786065845/PublicoHeadline-Light-Web_2_ahenej.woff2') format('woff2');
+    font-weight: 300;
+    font-style: normal;
+}
+
+/* Publico Headline Bold */
 @font-face {
     font-family: 'Publico Headline Web';
     src: url('https://www.axacolpatria.co/documents/42201273/155366192/PublicoHeadline-Bold-Web.woff2/75213c52-4c6b-b99e-1752-5d9f9512c511?t=1753376219436') format('woff2'),

@@ -85,7 +85,7 @@ function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-8">
           <p className="text-white text-2xl font-normal mb-3 tracking-wide">Blog</p>
-          <h1 className="text-white leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(1.75rem, 3.5vw, 2.6rem)' }}>Protegemos lo que más importa con información útil para tu día a día</h1>
+          <h1 className="text-white leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 300, fontSize: 'clamp(1.75rem, 3.5vw, 2.6rem)' }}>Protegemos lo que más importa con información útil para tu día a día</h1>
         </div>
       </section>
 
