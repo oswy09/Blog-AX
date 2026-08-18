@@ -47,6 +47,7 @@ function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState('Todos');
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [activeVideo, setActiveVideo] = useState<typeof videoItems[0] | null>(null);
+  const [showAllCards, setShowAllCards] = useState(false);
 
   const toggleTag = (tag: string) => setActiveTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
   const clearFilters = () => { setActiveTags([]); setSearchQuery(''); setSelectedCategory('Todos'); };
@@ -72,9 +73,9 @@ function HomePage() {
               <button className="border border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white text-sm font-semibold px-4 py-2 transition-colors whitespace-nowrap">Contáctanos</button>
               <button className="p-2 text-gray-500 hover:text-[#00008F] transition-colors"><Search size={18} /></button>
             </div>
-            {/* Mobile hamburger */}
+            {/* Mobile hamburger — touch target 44×44px */}
             <div className="flex md:hidden items-center ml-auto">
-              <button className="p-2 text-[#00008F]"><Menu size={24} /></button>
+              <button className="w-11 h-11 flex items-center justify-center text-[#00008F]" aria-label="Menú"><Menu size={24} /></button>
             </div>
           </div>
         </div>
@@ -145,31 +146,61 @@ function HomePage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
               <h2 className="text-2xl mb-6" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recomendados del día</h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {(filteredRecent.length > 0 ? filteredRecent : recentPosts).concat(filteredBlog.length > 0 ? filteredBlog : blogPosts).slice(0, 6).map(post => (
-                  <article key={post.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
-                    <div className="relative w-full h-44 overflow-hidden">
-                      <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                      <div className="absolute top-3 right-3"><span className="inline-block text-white text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: '#7698CB' }}>{post.category}</span></div>
+              {(() => {
+                const allPosts = (filteredRecent.length > 0 ? filteredRecent : recentPosts).concat(filteredBlog.length > 0 ? filteredBlog : blogPosts).slice(0, 6);
+                const visiblePosts = showAllCards ? allPosts : allPosts.slice(0, 3);
+                return (
+                  <>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      {visiblePosts.map(post => (
+                        <article key={post.id} className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
+                          <div className="relative w-full h-44 overflow-hidden">
+                            <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <div className="absolute top-3 right-3"><span className="inline-block text-white text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: '#7698CB' }}>{post.category}</span></div>
+                          </div>
+                          <div className="p-4">
+                            <h3 className="text-[17px] leading-snug mb-2 line-clamp-2 text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{post.title}</h3>
+                            <p className="text-sm text-gray-500 line-clamp-2 mb-3">{post.excerpt}</p>
+                            <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
+                              <span className="flex items-center gap-1"><Calendar size={12} />{post.date}</span>
+                              <span className="flex items-center gap-1"><Clock size={12} />{post.readTime}</span>
+                            </div>
+                            <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#00008F]">Leer más <ChevRight size={14} /></span>
+                          </div>
+                        </article>
+                      ))}
                     </div>
-                    <div className="p-4">
-                      <h3 className="text-[17px] leading-snug mb-2 line-clamp-2 text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{post.title}</h3>
-                      <p className="text-sm text-gray-500 line-clamp-2 mb-3">{post.excerpt}</p>
-                      <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
-                        <span className="flex items-center gap-1"><Calendar size={12} />{post.date}</span>
-                        <span className="flex items-center gap-1"><Clock size={12} />{post.readTime}</span>
+                    {/* Cargar más — solo mobile */}
+                    {!showAllCards && allPosts.length > 3 && (
+                      <div className="flex justify-center mt-6 sm:hidden">
+                        <button onClick={() => setShowAllCards(true)} className="border border-[#00008F] text-[#00008F] font-semibold px-6 py-2.5 rounded-full text-sm hover:bg-[#00008F] hover:text-white transition-colors">
+                          Cargar más artículos
+                        </button>
                       </div>
-                      <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#00008F]">Leer más <ChevRight size={14} /></span>
-                    </div>
-                  </article>
-                ))}
-              </div>
+                    )}
+                  </>
+                );
+              })()}
             </div>
 
             <div className="lg:col-span-1 space-y-8">
+              {/* Recientes */}
               <div>
-                <h2 className="text-xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recientes</h2>
-                <div className="divide-y divide-gray-100">
+                <h2 className="text-2xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recientes</h2>
+                {/* Mobile: carrusel horizontal */}
+                <div className="flex gap-3 overflow-x-auto pb-2 lg:hidden" style={{ scrollSnapType: 'x mandatory' }}>
+                  {mostReadPosts.slice(0, 3).map(post => (
+                    <div key={post.id} className="flex-shrink-0 w-56 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer" style={{ scrollSnapAlign: 'start' }} onClick={() => navigate(`/articulo/${post.id}`)}>
+                      <img src={post.image} alt={post.title} className="w-full h-32 object-cover" />
+                      <div className="p-3">
+                        <h4 className="text-[13px] font-bold leading-snug text-gray-900 line-clamp-2 mb-1" style={{ fontFamily: "'Publico Headline Web', serif" }}>{post.title}</h4>
+                        <p className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={10} /> {post.date}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Desktop: lista vertical */}
+                <div className="hidden lg:block divide-y divide-gray-100">
                   {mostReadPosts.slice(0, 3).map(post => (
                     <div key={post.id} className="flex items-start gap-3 py-3 cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
                       <img src={post.image} alt={post.title} className="w-[72px] h-[72px] object-cover flex-shrink-0 rounded-md" />
@@ -182,9 +213,24 @@ function HomePage() {
                   ))}
                 </div>
               </div>
+
+              {/* Más leídos */}
               <div>
-                <h2 className="text-xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Más leídos</h2>
-                <div className="divide-y divide-gray-100">
+                <h2 className="text-2xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Más leídos</h2>
+                {/* Mobile: carrusel horizontal */}
+                <div className="flex gap-3 overflow-x-auto pb-2 lg:hidden" style={{ scrollSnapType: 'x mandatory' }}>
+                  {mostReadPosts.slice(3, 6).map(post => (
+                    <div key={post.id} className="flex-shrink-0 w-56 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer" style={{ scrollSnapAlign: 'start' }} onClick={() => navigate(`/articulo/${post.id}`)}>
+                      <img src={post.image} alt={post.title} className="w-full h-32 object-cover" />
+                      <div className="p-3">
+                        <h4 className="text-[13px] font-bold leading-snug text-gray-900 line-clamp-2 mb-1" style={{ fontFamily: "'Publico Headline Web', serif" }}>{post.title}</h4>
+                        <p className="text-xs text-gray-400 flex items-center gap-1"><Calendar size={10} /> {post.date}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Desktop: lista vertical */}
+                <div className="hidden lg:block divide-y divide-gray-100">
                   {mostReadPosts.slice(3, 6).map(post => (
                     <div key={post.id} className="flex items-start gap-3 py-3 cursor-pointer group" onClick={() => navigate(`/articulo/${post.id}`)}>
                       <img src={post.image} alt={post.title} className="w-[72px] h-[72px] object-cover flex-shrink-0 rounded-md" />
@@ -206,9 +252,9 @@ function HomePage() {
       <section style={{ backgroundColor: '#E8F0F8' }} className="py-14">
         <div className="max-w-7xl mx-auto px-6">
           <h2 className="text-center mb-10" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', color: '#00008F' }}>Conoce en menos de 2 minutos...</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0" style={{ scrollSnapType: 'x mandatory' }}>
             {videoItems.map(video => (
-              <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer" onClick={() => setActiveVideo(video)}>
+              <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer flex-shrink-0 w-72 md:w-auto" style={{ scrollSnapAlign: 'start' }} onClick={() => setActiveVideo(video)}>
                 <div className="relative h-44 overflow-hidden">
                   <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/45 transition-colors flex items-center justify-center">
