@@ -73,8 +73,9 @@ function HomePage() {
               <button className="border border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white text-sm font-semibold px-4 py-2 transition-colors whitespace-nowrap">Contáctanos</button>
               <button className="p-2 text-gray-500 hover:text-[#00008F] transition-colors"><Search size={18} /></button>
             </div>
-            {/* Mobile hamburger — touch target 44×44px */}
-            <div className="flex md:hidden items-center ml-auto">
+            {/* Mobile: search + hamburger */}
+            <div className="flex md:hidden items-center ml-auto gap-1">
+              <button className="w-11 h-11 flex items-center justify-center text-[#00008F]" aria-label="Buscar"><Search size={20} /></button>
               <button className="w-11 h-11 flex items-center justify-center text-[#00008F]" aria-label="Menú"><Menu size={24} /></button>
             </div>
           </div>
@@ -82,7 +83,7 @@ function HomePage() {
       </header>
 
       {/* Hero */}
-      <section className="relative h-[400px] md:h-[480px] overflow-hidden" style={{ backgroundImage: `url(https://www.axacolpatria.co/documents/42201273/156411758/banner-vida-en-casa.webp/2960ab3f-161f-a106-6dc8-472e446c57d0?t=1755812539060)`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
+      <section className="relative h-[260px] md:h-[480px] overflow-hidden" style={{ backgroundImage: `url(https://www.axacolpatria.co/documents/42201273/156411758/banner-vida-en-casa.webp/2960ab3f-161f-a106-6dc8-472e446c57d0?t=1755812539060)`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-8">
           <p className="text-white text-2xl font-normal mb-3 tracking-wide">Blog</p>
