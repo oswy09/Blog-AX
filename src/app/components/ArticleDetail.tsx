@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from 'react-router';
-import { Calendar, ArrowRight, ChevronRight, Share2 } from 'lucide-react';
+import { Calendar, ArrowRight, ChevronRight, Share2, Menu } from 'lucide-react';
 import { getArticleById } from '../data';
 
 const relatedArticles = [
@@ -18,7 +18,7 @@ export default function ArticleDetail() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-500 mb-4">Artículo no encontrado.</p>
-          <button onClick={() => navigate('/')} className="bg-[#00008F] text-white px-6 py-2 rounded font-semibold">Volver al Blog</button>
+          <button onClick={() => navigate('/')} className="bg-[#00008F] text-white px-6 py-2 rounded-full font-semibold">Volver al Blog</button>
         </div>
       </div>
     );
@@ -37,14 +37,17 @@ export default function ArticleDetail() {
         <div className="max-w-[1280px] mx-auto px-4">
           <div className="flex items-center h-[52px] gap-8">
             <img src="https://image.marketing.axacolpatria.co/lib/fe2911747364047e721277/m/1/414c8f47-08cb-4aca-80c0-c4ef42d1e91d.jpg" alt="AXA Colpatria" className="h-8 flex-shrink-0 cursor-pointer" onClick={() => navigate('/')} />
-            <nav className="flex items-center justify-center gap-7 flex-1">
+            <nav className="hidden md:flex items-center justify-center gap-7 flex-1">
               {['INICIO', 'Salud y Bienestar', 'Estilo de vida', 'Empresas', 'Actualidad'].map(item => (
                 <a key={item} href="#" className="text-sm font-bold text-[#00008F] hover:text-[#4976BA] whitespace-nowrap transition-colors">{item}</a>
               ))}
             </nav>
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button className="bg-[#00008F] hover:bg-[#0000b3] text-white text-sm font-semibold px-4 py-2 transition-colors whitespace-nowrap">Cotiza tu seguro aquí</button>
-              <button className="border border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white text-sm font-semibold px-4 py-2 transition-colors whitespace-nowrap">Contáctanos</button>
+            <div className="hidden md:flex items-center gap-2 flex-shrink-0">
+              <button className="bg-[#00008F] hover:bg-[#0000F7] text-white text-sm font-semibold px-5 py-2 rounded-full transition-colors whitespace-nowrap">Cotiza tu seguro aquí</button>
+              <button className="border border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white text-sm font-semibold px-5 py-2 rounded-full transition-colors whitespace-nowrap">Contáctanos</button>
+            </div>
+            <div className="flex md:hidden items-center ml-auto">
+              <button className="w-11 h-11 flex items-center justify-center text-[#00008F]" aria-label="Menú"><Menu size={24} /></button>
             </div>
           </div>
         </div>
@@ -64,17 +67,17 @@ export default function ArticleDetail() {
       </div>
 
       {/* Imagen hero — menos alta en mobile */}
-      <section className="relative h-[220px] sm:h-[380px] md:h-[480px] overflow-hidden">
+      <section className="relative h-[310px] sm:h-[380px] md:h-[480px] overflow-hidden">
         <img src={article.image} alt={article.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/30" />
       </section>
 
-      <div className="relative -mt-10 sm:-mt-24 px-3 sm:px-4 z-40 mb-12">
-        <div className="max-w-4xl mx-auto bg-white rounded-lg p-6 sm:p-10 md:p-12 shadow-lg relative">
+      <div className="relative -mt-10 sm:-mt-24 px-3 sm:px-4 z-40 mb-4">
+        <div className="max-w-4xl mx-auto bg-white p-6 sm:p-10 md:p-12 relative">
           <button onClick={handleShare} className="absolute top-0 right-0 p-3 bg-[#4976BA] hover:bg-[#3a5a8a] transition-colors shadow-lg" title="Compartir artículo">
             <Share2 size={20} className="text-white" />
           </button>
-          <h1 className="text-[#00008F] leading-tight mb-4 pr-12 text-center" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(1.3rem, 2.5vw, 1.8rem)' }}>{article.title}</h1>
+          <h1 className="text-[#00008F] leading-tight mb-4 pr-12 text-center text-[1.75rem] md:text-[2.5rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{article.title}</h1>
           <div className="flex items-center justify-center gap-3 text-xs text-gray-600 mb-8 pb-8 border-b border-gray-200">
             <span className="font-semibold text-[#00008F]">{article.category}</span>
             <span>|</span><span>Artículo</span><span>|</span><span>{article.date}</span><span>|</span><span>{article.readTime}</span>
@@ -85,15 +88,23 @@ export default function ArticleDetail() {
             <p className="text-gray-700 leading-relaxed mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
             <h3 className="text-xl font-bold text-gray-900 mt-8 mb-4" style={{ fontFamily: "'Publico Headline Web', serif" }}>H3 Lorem ipsum</h3>
             <p className="text-gray-700 leading-relaxed mb-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
-            <div className="my-10 rounded-xl overflow-hidden">
-              <iframe width="100%" height="500" src="https://www.youtube.com/embed/fzSyiC2DWgc?rel=0" title="YouTube video" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen className="w-full rounded-xl" />
+            {/* Video 16:9 responsive */}
+            <div className="my-6 rounded-xl overflow-hidden" style={{ position: 'relative', paddingTop: '56.25%' }}>
+              <iframe
+                style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
+                src="https://www.youtube.com/embed/fzSyiC2DWgc?rel=0"
+                title="YouTube video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             </div>
           </div>
 
         </div>
       </div>
 
-      <section className="py-14 bg-white">
+      <section className="py-8 bg-white">
         <div className="max-w-full px-3 sm:px-6">
           <h2 className="text-2xl font-bold text-[#00008F] mb-8 max-w-6xl mx-auto" style={{ fontFamily: "'Publico Headline Web', serif" }}>También te puede interesar</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-6xl mx-auto">
@@ -115,17 +126,15 @@ export default function ArticleDetail() {
       </section>
 
       <div className="flex justify-center py-12 bg-white">
-        <button onClick={() => navigate('/')} className="bg-[#00008F] hover:bg-[#0000b3] text-white font-bold py-3 px-8 rounded transition-colors">Todos los artículos</button>
+        <button onClick={() => navigate('/')} className="bg-[#00008F] hover:bg-[#0000F7] text-white font-bold py-3 px-8 rounded-full transition-colors">Todos los artículos</button>
       </div>
 
-      <section className="relative overflow-hidden bg-white py-8">
-        <div className="w-full px-3 sm:px-6">
-          <img src="https://res.cloudinary.com/ddqbnr9vo/image/upload/v1782843370/banner-autorizaciones-medicas_jfvfxn.jpg" alt="Autorizaciones médicas" className="w-full h-auto object-contain rounded-lg" />
-        </div>
+      <section className="bg-white">
+        <img src="https://res.cloudinary.com/ddqbnr9vo/image/upload/v1782843370/banner-autorizaciones-medicas_jfvfxn.jpg" alt="Autorizaciones médicas" className="w-full h-auto" />
       </section>
 
-      <footer>
-        <img src="https://res.cloudinary.com/ddqbnr9vo/image/upload/v1782842464/footer_AXA_f1azqa.jpg" alt="Footer AXA Colpatria" className="w-full h-auto" />
+      <footer className="bg-[#4976BA] py-10 px-6 text-center">
+        <p className="text-white/80 text-sm">© {new Date().getFullYear()} AXA Colpatria. Todos los derechos reservados.</p>
       </footer>
     </div>
   );

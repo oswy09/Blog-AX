@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Routes, Route, Navigate, useNavigate } from 'react-router';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -48,6 +48,16 @@ function HomePage() {
   const [activeTags, setActiveTags] = useState<string[]>([]);
   const [activeVideo, setActiveVideo] = useState<typeof videoItems[0] | null>(null);
   const [showAllCards, setShowAllCards] = useState(false);
+  const [dotReciente, setDotReciente] = useState(0);
+  const [dotMasLeido, setDotMasLeido] = useState(0);
+  const [dotVideo, setDotVideo] = useState(0);
+  const refReciente = useRef<HTMLDivElement>(null);
+  const refMasLeido = useRef<HTMLDivElement>(null);
+  const refVideo = useRef<HTMLDivElement>(null);
+  const onScrollDot = (ref: React.RefObject<HTMLDivElement>, count: number, setter: (i: number) => void) => {
+    const el = ref.current; if (!el) return;
+    setter(Math.min(count - 1, Math.round(el.scrollLeft / (el.scrollWidth / count))));
+  };
 
   const toggleTag = (tag: string) => setActiveTags(prev => prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]);
   const clearFilters = () => { setActiveTags([]); setSearchQuery(''); setSelectedCategory('Todos'); };
@@ -60,7 +70,7 @@ function HomePage() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div className="max-w-[1280px] mx-auto px-4">
-          <div className="flex items-center h-[52px] gap-8">
+          <div className="flex items-center h-[52px] gap-3 md:gap-8">
             <img src="https://image.marketing.axacolpatria.co/lib/fe2911747364047e721277/m/1/414c8f47-08cb-4aca-80c0-c4ef42d1e91d.jpg" alt="AXA Colpatria" className="h-8 flex-shrink-0 cursor-pointer" onClick={() => navigate('/')} />
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center justify-center gap-7 flex-1">
@@ -69,14 +79,22 @@ function HomePage() {
               ))}
             </nav>
             <div className="hidden md:flex items-center gap-2 flex-shrink-0">
-              <button className="bg-[#00008F] hover:bg-[#0000b3] text-white text-sm font-semibold px-4 py-2 transition-colors whitespace-nowrap">Cotiza tu seguro aquí</button>
-              <button className="border border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white text-sm font-semibold px-4 py-2 transition-colors whitespace-nowrap">Contáctanos</button>
-              <button className="p-2 text-gray-500 hover:text-[#00008F] transition-colors"><Search size={18} /></button>
+              <button className="bg-[#00008F] hover:bg-[#0000F7] text-white text-sm font-semibold px-5 py-2 rounded-full transition-colors whitespace-nowrap">Cotiza tu seguro aquí</button>
+              <button className="border border-[#00008F] text-[#00008F] hover:bg-[#00008F] hover:text-white text-sm font-semibold px-5 py-2 rounded-full transition-colors whitespace-nowrap">Contáctanos</button>
             </div>
-            {/* Mobile: search + hamburger */}
-            <div className="flex md:hidden items-center ml-auto gap-1">
-              <button className="w-11 h-11 flex items-center justify-center text-[#00008F]" aria-label="Buscar"><Search size={20} /></button>
-              <button className="w-11 h-11 flex items-center justify-center text-[#00008F]" aria-label="Menú"><Menu size={24} /></button>
+            {/* Mobile: inline search + hamburger */}
+            <div className="flex md:hidden items-center flex-1 gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
+                <input
+                  type="text"
+                  placeholder="Buscar..."
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 border border-gray-200 rounded-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#00008F] transition-colors"
+                />
+              </div>
+              <button className="w-11 h-11 flex items-center justify-center text-[#00008F] flex-shrink-0" aria-label="Menú"><Menu size={24} /></button>
             </div>
           </div>
         </div>
@@ -87,17 +105,15 @@ function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-8">
           <p className="text-white text-2xl font-normal mb-3 tracking-wide">Blog</p>
-          <h1 className="text-white leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 300, fontSize: 'clamp(1.75rem, 3.5vw, 2.6rem)' }}>Protegemos lo que más importa con información útil para tu día a día</h1>
+          <h1 className="text-white leading-tight text-[1.5rem] md:text-[4rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 300 }}>Protegemos lo que más importa con información útil para tu día a día</h1>
         </div>
       </section>
 
       {/* Search + Categorías */}
       <div className="bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-6 py-10">
-          <h2 className="text-center text-3xl md:text-4xl text-gray-800 mb-7 leading-tight">
-            <span style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>¿Qué quieres aprender hoy?</span>
-          </h2>
-          <div className="flex gap-2 mb-5 max-w-lg mx-auto">
+          <h2 className="text-center text-gray-800 mb-7 leading-tight text-[1.75rem] md:text-[2.5rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>¿Qué quieres aprender hoy?</h2>
+          <div className="hidden md:flex gap-2 mb-5 max-w-lg mx-auto">
             <div className="relative flex-1">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
               <input type="text" placeholder="Buscar" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-full text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#00008F] transition-colors" />
@@ -113,9 +129,9 @@ function HomePage() {
               <button key={tag} onClick={() => { toggleTag(tag); setSelectedCategory(tag); navigate(`/categoria/${encodeURIComponent(tag)}`); }} className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all border whitespace-nowrap flex-shrink-0 ${activeTags.includes(tag) || selectedCategory === tag ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#4976BA] border-[#4976BA]/40 hover:border-[#00008F] hover:text-[#00008F]'}`}>{tag}</button>
             ))}
           </div>
-          <div className="grid md:hidden grid-cols-3 gap-2">
+          <div className="flex md:hidden flex-wrap gap-1.5 justify-center">
             {categories.map(tag => (
-              <button key={tag} onClick={() => { if (tag === 'Todos') { setActiveTags([]); setSelectedCategory('Todos'); } else { toggleTag(tag); setSelectedCategory(tag); navigate(`/categoria/${encodeURIComponent(tag)}`); } }} className={`px-3 py-1.5 rounded-full text-sm font-semibold transition-all border text-center ${(tag === 'Todos' && activeTags.length === 0 && selectedCategory === 'Todos') || activeTags.includes(tag) || selectedCategory === tag ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#4976BA] border-[#4976BA]/40'}`}>{tag}</button>
+              <button key={tag} onClick={() => { if (tag === 'Todos') { setActiveTags([]); setSelectedCategory('Todos'); } else { toggleTag(tag); setSelectedCategory(tag); navigate(`/categoria/${encodeURIComponent(tag)}`); } }} className={`px-3 py-1 rounded-full text-xs font-semibold transition-all border ${(tag === 'Todos' && activeTags.length === 0 && selectedCategory === 'Todos') || activeTags.includes(tag) || selectedCategory === tag ? 'bg-[#00008F] text-white border-[#00008F]' : 'bg-white text-[#4976BA] border-[#4976BA]/40'}`}>{tag}</button>
             ))}
           </div>
         </div>
@@ -124,7 +140,7 @@ function HomePage() {
       {/* Destacados */}
       <section className="bg-white py-10">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-2xl mb-5" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Destacados de la semana</h2>
+          <h2 className="mb-5 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Destacados de la semana</h2>
           <div className="relative w-full h-[340px] rounded-xl overflow-hidden cursor-pointer group" onClick={() => navigate(`/articulo/${featuredPosts[0].id}`)}>
             <img src={featuredPosts[0].image} alt={featuredPosts[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
@@ -146,7 +162,7 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
-              <h2 className="text-2xl mb-6" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recomendados del día</h2>
+              <h2 className="mb-6 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recomendados del día</h2>
               {(() => {
                 const allPosts = (filteredRecent.length > 0 ? filteredRecent : recentPosts).concat(filteredBlog.length > 0 ? filteredBlog : blogPosts).slice(0, 6);
                 const visiblePosts = showAllCards ? allPosts : allPosts.slice(0, 3);
@@ -187,9 +203,9 @@ function HomePage() {
             <div className="lg:col-span-1 space-y-8">
               {/* Recientes */}
               <div>
-                <h2 className="text-2xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recientes</h2>
+                <h2 className="mb-4 text-lg leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recientes</h2>
                 {/* Mobile: carrusel horizontal */}
-                <div className="flex gap-3 overflow-x-auto pb-2 lg:hidden" style={{ scrollSnapType: 'x mandatory' }}>
+                <div ref={refReciente} onScroll={() => onScrollDot(refReciente, 3, setDotReciente)} className="flex gap-3 overflow-x-auto pb-2 lg:hidden" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
                   {mostReadPosts.slice(0, 3).map(post => (
                     <div key={post.id} className="flex-shrink-0 w-56 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer" style={{ scrollSnapAlign: 'start' }} onClick={() => navigate(`/articulo/${post.id}`)}>
                       <img src={post.image} alt={post.title} className="w-full h-32 object-cover" />
@@ -199,6 +215,9 @@ function HomePage() {
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className="flex lg:hidden justify-center gap-2 mt-2">
+                  {[0,1,2].map(i => <span key={i} className={`block w-2 h-2 rounded-full transition-colors ${i === dotReciente ? 'bg-[#00008F]' : 'bg-[#00008F]/25'}`} />)}
                 </div>
                 {/* Desktop: lista vertical */}
                 <div className="hidden lg:block divide-y divide-gray-100">
@@ -217,9 +236,9 @@ function HomePage() {
 
               {/* Más leídos */}
               <div>
-                <h2 className="text-2xl mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Más leídos</h2>
+                <h2 className="mb-4 text-lg leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Más leídos</h2>
                 {/* Mobile: carrusel horizontal */}
-                <div className="flex gap-3 overflow-x-auto pb-2 lg:hidden" style={{ scrollSnapType: 'x mandatory' }}>
+                <div ref={refMasLeido} onScroll={() => onScrollDot(refMasLeido, 3, setDotMasLeido)} className="flex gap-3 overflow-x-auto pb-2 lg:hidden" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
                   {mostReadPosts.slice(3, 6).map(post => (
                     <div key={post.id} className="flex-shrink-0 w-56 bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer" style={{ scrollSnapAlign: 'start' }} onClick={() => navigate(`/articulo/${post.id}`)}>
                       <img src={post.image} alt={post.title} className="w-full h-32 object-cover" />
@@ -229,6 +248,9 @@ function HomePage() {
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className="flex lg:hidden justify-center gap-2 mt-2">
+                  {[0,1,2].map(i => <span key={i} className={`block w-2 h-2 rounded-full transition-colors ${i === dotMasLeido ? 'bg-[#00008F]' : 'bg-[#00008F]/25'}`} />)}
                 </div>
                 {/* Desktop: lista vertical */}
                 <div className="hidden lg:block divide-y divide-gray-100">
@@ -252,8 +274,8 @@ function HomePage() {
       {/* Videos */}
       <section style={{ backgroundColor: '#E8F0F8' }} className="py-14">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-center mb-10" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.8rem)', color: '#00008F' }}>Conoce en menos de 2 minutos...</h2>
-          <div className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0" style={{ scrollSnapType: 'x mandatory' }}>
+          <h2 className="text-center mb-10 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Conoce en menos de 2 minutos...</h2>
+          <div ref={refVideo} onScroll={() => onScrollDot(refVideo, 3, setDotVideo)} className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
             {videoItems.map(video => (
               <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer flex-shrink-0 w-72 md:w-auto" style={{ scrollSnapAlign: 'start' }} onClick={() => setActiveVideo(video)}>
                 <div className="relative h-44 overflow-hidden">
@@ -271,13 +293,16 @@ function HomePage() {
               </div>
             ))}
           </div>
+          <div className="flex md:hidden justify-center gap-2 mt-4">
+            {[0,1,2].map(i => <span key={i} className={`block w-2 h-2 rounded-full transition-colors ${i === dotVideo ? 'bg-[#00008F]' : 'bg-[#00008F]/25'}`} />)}
+          </div>
         </div>
       </section>
 
       <VideoModal video={activeVideo} onClose={() => setActiveVideo(null)} />
 
-      <footer>
-        <img src="https://res.cloudinary.com/ddqbnr9vo/image/upload/v1782842464/footer_AXA_f1azqa.jpg" alt="Footer AXA Colpatria" className="w-full h-auto" />
+      <footer className="bg-[#4976BA] py-10 px-6 text-center">
+        <p className="text-white/80 text-sm">© {new Date().getFullYear()} AXA Colpatria. Todos los derechos reservados.</p>
       </footer>
     </div>
   );
