@@ -1,5 +1,5 @@
-import { useState, useRef } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router';
+import { useState, useRef, useEffect } from 'react';
+import { Routes, Route, Navigate, useNavigate, useLocation } from 'react-router';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { Search, Calendar, Clock, ChevronRight as ChevRight, X, Menu } from 'lucide-react';
@@ -102,7 +102,8 @@ function HomePage() {
 
       {/* Hero */}
       <section className="relative h-[260px] md:h-[480px] overflow-hidden" style={{ backgroundImage: `url(https://www.axacolpatria.co/documents/42201273/156411758/banner-vida-en-casa.webp/2960ab3f-161f-a106-6dc8-472e446c57d0?t=1755812539060)`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/15" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-8">
           <p className="text-white text-2xl font-normal mb-3 tracking-wide">Blog</p>
           <h1 className="text-white leading-tight text-[1.5rem] md:text-[4rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 300 }}>Protegemos lo que más importa con información útil para tu día a día</h1>
@@ -308,14 +309,25 @@ function HomePage() {
   );
 }
 
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
+
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/home" element={<Navigate to="/" replace />} />
-      <Route path="/articulo/:id" element={<ArticleDetail />} />
-      <Route path="/categoria/:nombre" element={<CategoryPage />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<Navigate to="/" replace />} />
+        <Route path="/articulo/:id" element={<ArticleDetail />} />
+        <Route path="/categoria/:nombre" element={<CategoryPage />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }

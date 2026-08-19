@@ -1,4 +1,4 @@
-import { ChevronRight, ChevronLeft, Calendar, Clock, Menu } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Calendar, Clock, Menu, X } from 'lucide-react';
 import { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { allArticles } from '../data';
@@ -8,6 +8,30 @@ const videoItems = [
   { id: 2, title: 'Beneficios del Seguro de Salud', thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', category: 'Seguros' },
   { id: 3, title: 'Ejercicios de Bienestar en el Trabajo', thumbnail: 'https://images.unsplash.com/photo-1606857521015-7f9fcf423740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=600', category: 'Bienestar' },
 ];
+
+function VideoModal({ video, onClose }: { video: typeof videoItems[0] | null; onClose: () => void }) {
+  if (!video) return null;
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75" onClick={onClose}>
+      <div className="relative w-full max-w-3xl mx-4" onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors flex items-center gap-1 text-sm font-semibold">
+          <X size={18} /> Cerrar
+        </button>
+        <div className="relative w-full rounded-xl overflow-hidden shadow-2xl" style={{ paddingTop: '56.25%' }}>
+          <iframe
+            className="absolute inset-0 w-full h-full"
+            src={`https://www.youtube.com/embed/fzSyiC2DWgc?autoplay=1&rel=0`}
+            title={video.title}
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+        <p className="text-white font-semibold mt-3 text-center" style={{ fontFamily: "'Publico Headline Web', serif" }}>{video.title}</p>
+      </div>
+    </div>
+  );
+}
 
 const moreCategories = [
   { id: 1, title: 'Movilidad segura', image: 'https://images.unsplash.com/photo-1549227082-0ea18ce30397?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=700', cat: 'Movilidad' },
@@ -27,9 +51,16 @@ export default function CategoryPage() {
   const sliderRef = useRef<HTMLDivElement>(null);
   const mobileSliderRef = useRef<HTMLDivElement>(null);
   const [dotCat, setDotCat] = useState(0);
+  const [activeVideo, setActiveVideo] = useState<typeof videoItems[0] | null>(null);
+  const refVideo = useRef<HTMLDivElement>(null);
+  const [dotVideo, setDotVideo] = useState(0);
   const onScrollCat = () => {
     const el = mobileSliderRef.current; if (!el) return;
     setDotCat(Math.min(moreCategories.length - 1, Math.round(el.scrollLeft / (el.scrollWidth / moreCategories.length))));
+  };
+  const onScrollVideo = () => {
+    const el = refVideo.current; if (!el) return;
+    setDotVideo(Math.min(videoItems.length - 1, Math.round(el.scrollLeft / (el.scrollWidth / videoItems.length))));
   };
   const VISIBLE = 3;
   const maxIndex = moreCategories.length - VISIBLE;
@@ -75,10 +106,10 @@ export default function CategoryPage() {
       </div>
 
       {/* Hero */}
-      <section className="relative h-[480px] overflow-hidden flex items-end justify-center pb-16" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1606857521015-7f9fcf423740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200)', backgroundSize: 'cover', backgroundPosition: 'center center' }}>
-        <div className="absolute inset-0 bg-black/25" />
+      <section className="relative h-[260px] md:h-[480px] overflow-hidden flex items-end justify-center pb-8 md:pb-16" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1606857521015-7f9fcf423740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200)', backgroundSize: 'cover', backgroundPosition: 'center center' }}>
+        <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 text-center max-w-3xl px-4">
-          <h1 className="text-white mb-6 text-[2.2rem] md:text-[4rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{category}</h1>
+          <h1 className="text-white mb-6 text-[1.75rem] md:text-[4rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{category}</h1>
         </div>
       </section>
 
@@ -133,13 +164,13 @@ export default function CategoryPage() {
       <section style={{ backgroundColor: '#E8F0F8' }} className="py-14">
         <div className="max-w-6xl mx-auto px-4">
           <h2 className="text-gray-900 text-center mb-10" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.8rem)' }}>Descubre más consejos...</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div ref={refVideo} onScroll={onScrollVideo} className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
             {videoItems.map(video => (
-              <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer">
+              <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer flex-shrink-0 w-72 md:w-auto" style={{ scrollSnapAlign: 'start' }} onClick={() => setActiveVideo(video)}>
                 <div className="relative h-44 overflow-hidden">
                   <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   <div className="absolute inset-0 bg-black/30 group-hover:bg-black/45 transition-colors flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-white/95 flex items-center justify-center shadow-lg">
+                    <div className="w-12 h-12 rounded-full bg-white/95 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
                       <div className="w-0 h-0 border-t-[7px] border-b-[7px] border-l-[13px] border-t-transparent border-b-transparent border-l-[#D24723] ml-1" />
                     </div>
                   </div>
@@ -151,8 +182,13 @@ export default function CategoryPage() {
               </div>
             ))}
           </div>
+          <div className="flex md:hidden justify-center gap-2 mt-4">
+            {videoItems.map((_, i) => <span key={i} className={`block w-2 h-2 rounded-full transition-colors ${i === dotVideo ? 'bg-[#00008F]' : 'bg-[#00008F]/25'}`} />)}
+          </div>
         </div>
       </section>
+
+      <VideoModal video={activeVideo} onClose={() => setActiveVideo(null)} />
 
       {/* Más categorías para ti */}
       <section className="py-12" style={{ backgroundColor: '#E8F0F8' }}>

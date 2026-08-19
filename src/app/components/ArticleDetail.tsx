@@ -129,8 +129,10 @@ export default function ArticleDetail() {
         <button onClick={() => navigate('/')} className="bg-[#00008F] hover:bg-[#0000F7] text-white font-bold py-3 px-8 rounded-full transition-colors">Todos los artículos</button>
       </div>
 
-      <section className="bg-white">
-        <img src="https://res.cloudinary.com/ddqbnr9vo/image/upload/v1782843370/banner-autorizaciones-medicas_jfvfxn.jpg" alt="Autorizaciones médicas" className="w-full h-auto" />
+      <section className="bg-white py-8">
+        <div className="max-w-6xl mx-auto px-3 sm:px-6">
+          <img src="https://res.cloudinary.com/ddqbnr9vo/image/upload/v1782843370/banner-autorizaciones-medicas_jfvfxn.jpg" alt="Autorizaciones médicas" className="w-full h-auto rounded-2xl shadow-md" />
+        </div>
       </section>
 
       <footer className="bg-[#4976BA] py-10 px-6 text-center">
