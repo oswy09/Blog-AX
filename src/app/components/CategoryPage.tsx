@@ -109,7 +109,7 @@ export default function CategoryPage() {
       <section className="relative h-[260px] md:h-[480px] overflow-hidden flex items-end justify-center pb-8 md:pb-16" style={{ backgroundImage: 'url(https://images.unsplash.com/photo-1606857521015-7f9fcf423740?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200)', backgroundSize: 'cover', backgroundPosition: 'center center' }}>
         <div className="absolute inset-0 bg-black/40" />
         <div className="relative z-10 text-center max-w-3xl px-4">
-          <h1 className="text-white mb-6 text-[1.75rem] md:text-[4rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{category}</h1>
+          <h1 className="text-white mb-6 leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(2rem, 5vw, 3rem)' }}>{category}</h1>
         </div>
       </section>
 
@@ -124,7 +124,7 @@ export default function CategoryPage() {
       {/* Artículos */}
       <section className="py-16 bg-white">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="mb-12 text-[1.75rem] md:text-[2.5rem] leading-tight font-bold text-[#00008F]" style={{ fontFamily: "'Publico Headline Web', serif" }}>Contenido para acompañarte</h2>
+          <h2 className="mb-12 leading-tight font-bold text-[#00008F]" style={{ fontFamily: "'Publico Headline Web', serif", fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}>Contenido para acompañarte</h2>
           {filtered.length === 0 ? (
             <p className="text-gray-500 text-center py-12">No hay artículos disponibles para esta categoría aún.</p>
           ) : (
@@ -139,7 +139,7 @@ export default function CategoryPage() {
                       </div>
                     </div>
                     <div className="p-4">
-                      <h3 className="text-[17px] leading-snug mb-2 line-clamp-2 text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{article.title}</h3>
+                      <h3 className="text-[20px] leading-snug mb-2 line-clamp-2 text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{article.title}</h3>
                       <p className="text-sm text-gray-500 line-clamp-2 mb-3">{article.excerpt}</p>
                       <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
                         <span className="flex items-center gap-1"><Calendar size={12} />{article.date}</span>
@@ -163,7 +163,7 @@ export default function CategoryPage() {
       {/* Videos */}
       <section style={{ backgroundColor: '#E8F0F8' }} className="py-14">
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="text-gray-900 text-center mb-10" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(2rem, 3.5vw, 2.8rem)' }}>Descubre más consejos...</h2>
+          <h2 className="text-gray-900 text-center mb-10" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}>Descubre más consejos...</h2>
           <div ref={refVideo} onScroll={onScrollVideo} className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
             {videoItems.map(video => (
               <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer flex-shrink-0 w-72 md:w-auto" style={{ scrollSnapAlign: 'start' }} onClick={() => setActiveVideo(video)}>
@@ -195,7 +195,7 @@ export default function CategoryPage() {
         <div className="max-w-6xl mx-auto px-4">
           {/* Header: título + flechas (flechas solo desktop) */}
           <div className="flex items-center justify-between mb-6">
-            <h2 className="text-[1.4rem] md:text-[2.5rem] leading-tight font-bold text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif" }}>Más categorías para ti</h2>
+            <h2 className="leading-tight font-bold text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif", fontSize: 'clamp(1.4rem, 3vw, 2.5rem)' }}>Más categorías para ti</h2>
             <div className="hidden md:flex items-center gap-2">
               <button
                 onClick={() => slide(-1)}

@@ -77,16 +77,16 @@ export default function ArticleDetail() {
           <button onClick={handleShare} className="absolute top-0 right-0 p-3 bg-[#4976BA] hover:bg-[#3a5a8a] transition-colors shadow-lg" title="Compartir artículo">
             <Share2 size={20} className="text-white" />
           </button>
-          <h1 className="text-[#00008F] leading-tight mb-4 pr-12 text-center text-[1.75rem] md:text-[2.5rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{article.title}</h1>
+          <h1 className="text-[#00008F] leading-tight mb-4 pr-12 text-center" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)' }}>{article.title}</h1>
           <div className="flex items-center justify-center gap-3 text-xs text-gray-600 mb-8 pb-8 border-b border-gray-200">
             <span className="font-semibold text-[#00008F]">{article.category}</span>
             <span>|</span><span>Artículo</span><span>|</span><span>{article.date}</span><span>|</span><span>{article.readTime}</span>
           </div>
           <div className="prose prose-lg max-w-none">
             <p className="text-gray-700 leading-relaxed mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p>
-            <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4" style={{ fontFamily: "'Publico Headline Web', serif" }}>H2 Lorem ipsum</h2>
+            <h3 className="font-bold text-gray-900 mt-8 mb-4" style={{ fontFamily: "'Publico Headline Web', serif", fontSize: '1.5rem' }}>H3 Lorem ipsum</h3>
             <p className="text-gray-700 leading-relaxed mb-6">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
-            <h3 className="text-xl font-bold text-gray-900 mt-8 mb-4" style={{ fontFamily: "'Publico Headline Web', serif" }}>H3 Lorem ipsum</h3>
+            <h4 className="font-bold text-gray-900 mt-6 mb-3" style={{ fontFamily: "'Publico Headline Web', serif", fontSize: '1.25rem' }}>H4 Lorem ipsum</h4>
             <p className="text-gray-700 leading-relaxed mb-8">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
             {/* Video 16:9 responsive */}
             <div className="my-6 rounded-xl overflow-hidden" style={{ position: 'relative', paddingTop: '56.25%' }}>

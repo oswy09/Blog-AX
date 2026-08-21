@@ -103,17 +103,17 @@ function HomePage() {
       {/* Hero */}
       <section className="relative h-[260px] md:h-[480px] overflow-hidden" style={{ backgroundImage: `url(https://www.axacolpatria.co/documents/42201273/156411758/banner-vida-en-casa.webp/2960ab3f-161f-a106-6dc8-472e446c57d0?t=1755812539060)`, backgroundSize: 'cover', backgroundPosition: 'center center' }}>
         <div className="absolute inset-0 bg-black/30" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-black/15" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-black/20 to-transparent" />
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center max-w-4xl mx-auto px-8">
           <p className="text-white text-2xl font-normal mb-3 tracking-wide">Blog</p>
-          <h1 className="text-white leading-tight text-[1.5rem] md:text-[4rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 300 }}>Protegemos lo que más importa con información útil para tu día a día</h1>
+          <h1 className="text-white leading-tight text-[2rem] md:text-[3rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 300 }}>Protegemos lo que más importa con información útil para tu día a día</h1>
         </div>
       </section>
 
       {/* Search + Categorías */}
       <div className="bg-white border-b border-gray-100 shadow-sm">
         <div className="max-w-5xl mx-auto px-6 py-10">
-          <h2 className="text-center text-gray-800 mb-7 leading-tight text-[1.75rem] md:text-[2.5rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>¿Qué quieres aprender hoy?</h2>
+          <h2 className="text-center text-gray-800 mb-7 leading-tight text-[1.75rem] md:text-[2.5rem]" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(1.5rem, 4vw, 2.5rem)' }}>¿Qué quieres aprender hoy?</h2>
           <div className="hidden md:flex gap-2 mb-5 max-w-lg mx-auto">
             <div className="relative flex-1">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
@@ -141,7 +141,7 @@ function HomePage() {
       {/* Destacados */}
       <section className="bg-white py-10">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="mb-5 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Destacados de la semana</h2>
+          <h2 className="mb-5 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', color: '#00008F' }}>Destacados de la semana</h2>
           <div className="relative w-full h-[340px] rounded-xl overflow-hidden cursor-pointer group" onClick={() => navigate(`/articulo/${featuredPosts[0].id}`)}>
             <img src={featuredPosts[0].image} alt={featuredPosts[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
@@ -163,7 +163,7 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div className="lg:col-span-2">
-              <h2 className="mb-6 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recomendados del día</h2>
+              <h2 className="mb-6 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', color: '#00008F' }}>Recomendados del día</h2>
               {(() => {
                 const allPosts = (filteredRecent.length > 0 ? filteredRecent : recentPosts).concat(filteredBlog.length > 0 ? filteredBlog : blogPosts).slice(0, 6);
                 const visiblePosts = showAllCards ? allPosts : allPosts.slice(0, 3);
@@ -177,7 +177,7 @@ function HomePage() {
                             <div className="absolute top-3 right-3"><span className="inline-block text-white text-xs font-semibold px-3 py-1 rounded-full" style={{ backgroundColor: '#7698CB' }}>{post.category}</span></div>
                           </div>
                           <div className="p-4">
-                            <h3 className="text-[17px] leading-snug mb-2 line-clamp-2 text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{post.title}</h3>
+                            <h3 className="text-[20px] leading-snug mb-2 line-clamp-2 text-gray-900" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700 }}>{post.title}</h3>
                             <p className="text-sm text-gray-500 line-clamp-2 mb-3">{post.excerpt}</p>
                             <div className="flex items-center gap-4 text-xs text-gray-400 mb-3">
                               <span className="flex items-center gap-1"><Calendar size={12} />{post.date}</span>
@@ -204,7 +204,7 @@ function HomePage() {
             <div className="lg:col-span-1 space-y-8">
               {/* Recientes */}
               <div>
-                <h2 className="mb-4 text-lg leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recientes</h2>
+                <h2 className="mb-4 text-[1.25rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Recientes</h2>
                 {/* Mobile: carrusel horizontal */}
                 <div ref={refReciente} onScroll={() => onScrollDot(refReciente, 3, setDotReciente)} className="flex gap-3 overflow-x-auto pb-2 lg:hidden" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
                   {mostReadPosts.slice(0, 3).map(post => (
@@ -237,7 +237,7 @@ function HomePage() {
 
               {/* Más leídos */}
               <div>
-                <h2 className="mb-4 text-lg leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Más leídos</h2>
+                <h2 className="mb-4 text-[1.25rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Más leídos</h2>
                 {/* Mobile: carrusel horizontal */}
                 <div ref={refMasLeido} onScroll={() => onScrollDot(refMasLeido, 3, setDotMasLeido)} className="flex gap-3 overflow-x-auto pb-2 lg:hidden" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
                   {mostReadPosts.slice(3, 6).map(post => (
@@ -275,7 +275,7 @@ function HomePage() {
       {/* Videos */}
       <section style={{ backgroundColor: '#E8F0F8' }} className="py-14">
         <div className="max-w-7xl mx-auto px-6">
-          <h2 className="text-center mb-10 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, color: '#00008F' }}>Conoce en menos de 2 minutos...</h2>
+          <h2 className="text-center mb-10 text-[1.75rem] md:text-[2.5rem] leading-tight" style={{ fontFamily: "'Publico Headline Web', serif", fontWeight: 700, fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', color: '#00008F' }}>Conoce en menos de 2 minutos...</h2>
           <div ref={refVideo} onScroll={() => onScrollDot(refVideo, 3, setDotVideo)} className="flex gap-4 overflow-x-auto pb-2 md:grid md:grid-cols-3 md:gap-6 md:overflow-visible md:pb-0" style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none' }}>
             {videoItems.map(video => (
               <div key={video.id} className="bg-white rounded-xl overflow-hidden shadow-lg group cursor-pointer flex-shrink-0 w-72 md:w-auto" style={{ scrollSnapAlign: 'start' }} onClick={() => setActiveVideo(video)}>
